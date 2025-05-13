@@ -1,0 +1,110 @@
+/* Chat.module.css */
+.chatContainer {
+    width: 100%;
+    background: rgba(13, 2, 33, 0.9);
+    border: 3px solid #ff2d75;
+    box-shadow: 0 0 0 4px #2bff00;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    position: relative;
+}
+
+.chatContainer::before {
+    content: "CHAT TERMINAL v1.0";
+    position: absolute;
+    top: -15px;
+    left: 10px;
+    background: #0d0221;
+    padding: 0 10px;
+    font-size: 10px;
+    color: #ff2d75;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.messageContainer {
+    height: 60vh;
+    overflow-y: auto;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid #2bff00;
+    margin: 15px 0;
+    scrollbar-width: thin;
+    scrollbar-color: #ff2d75 #0d0221;
+}
+
+.messageContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+.messageContainer::-webkit-scrollbar-track {
+    background: #0d0221;
+}
+
+.messageContainer::-webkit-scrollbar-thumb {
+    background-color: #ff2d75;
+    border-radius: 4px;
+}
+
+.message {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid #ff9e00;
+}
+
+.systemMessage {
+    color: #2bff00 !important;
+    font-size: 10px !important;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-left: 3px solid #ff2d75;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form input {
+    background: rgba(0, 0, 0, 0.5) !important;
+    border: 2px solid #ffffff !important;
+    color: white !important;
+    padding: 10px !important;
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 10px !important;
+    caret-color: #ff2d75;
+    animation: blink 1s step-end infinite;
+}
+
+.form button {
+    background: #ff2d75 !important;
+    color: black !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 10px !important;
+    cursor: pointer;
+    transition: all 0.2s !important;
+}
+
+.form button:hover {
+    background: #ff9e00 !important;
+    transform: translateY(-1px);
+}
+
+.status {
+    margin-top: 15px !important;
+    font-family: 'Press Start 2P', cursive !important;
+    font-size: 10px !important;
+    color: #ffffff !important;
+}
+
+@keyframes blink {
+    from, to { opacity: 1; }
+    50% { opacity: 0; }
+}

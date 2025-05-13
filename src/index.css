@@ -1,0 +1,25 @@
+/* index.css */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --retro-primary: #ff2d75; /* Ретро-розовый */
+  --retro-secondary: #2bff00; /* Ретро-зеленый */
+  --retro-bg: #0d0221; /* Темно-фиолетовый фон */
+  --retro-text: #ffffff;
+  --retro-accent: #ff9e00;
+  --retro-border: 3px solid var(--retro-text);
+}
+
+body {
+  font-family: 'Press Start 2P', cursive;
+  background-color: var(--retro-bg);
+  color: var(--retro-text);
+  line-height: 1.6;
+  font-size: 12px;
+}

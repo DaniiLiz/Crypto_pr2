@@ -1,0 +1,104 @@
+/* Table.module.css */
+.container {
+    width: 100%;
+    padding: 20px;
+    margin-top: 60px;
+}
+
+.loading {
+    display: flex;
+    min-height: 500px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(13, 2, 33, 0.8);
+    border: var(--retro-border);
+    box-shadow: 0 0 0 4px var(--retro-primary);
+}
+
+.table {
+    background: rgba(13, 2, 33, 0.8);
+    border: var(--retro-border);
+    box-shadow: 0 0 0 4px var(--retro-primary);
+    margin: 20px auto;
+    padding: 10px;
+    position: relative;
+    max-width: 1200px;
+}
+
+.table:before {
+    content: "CRYPTO TERMINAL v1.0";
+    position: absolute;
+    top: -15px;
+    left: 10px;
+    background: var(--retro-bg);
+    padding: 0 10px;
+    font-size: 10px;
+    color: var(--retro-primary);
+}
+
+.table :global(.ant-table-thead > tr > th) {
+    background: var(--retro-bg) !important;
+    color: var(--retro-secondary) !important;
+    font-size: 10px;
+    text-transform: uppercase;
+    border-bottom: var(--retro-border) !important;
+    padding: 12px 8px !important;
+}
+
+.table :global(.ant-table-tbody > tr > td) {
+    border-bottom: 1px dashed var(--retro-primary) !important;
+    padding: 12px 8px !important;
+    font-size: 10px;
+}
+
+.table :global(.ant-table-tbody > tr:hover > td) {
+    background: rgba(255, 45, 117, 0.1) !important;
+    color: var(--retro-accent) !important;
+}
+
+.chatButton {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    background: var(--retro-primary) !important;
+    color: black !important;
+    border: var(--retro-border) !important;
+    box-shadow: 4px 4px 0 var(--retro-text) !important;
+    z-index: 1001;
+    transition: all 0.1s;
+}
+
+.chatButton:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--retro-text) !important;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    gap: 15px;
+}
+
+.pagination button {
+    background: var(--retro-bg) !important;
+    color: var(--retro-text) !important;
+    border: var(--retro-border) !important;
+    font-family: 'Press Start 2P', cursive !important;
+    padding: 8px 16px !important;
+    font-size: 10px !important;
+}
+
+.pagination button:hover {
+    color: var(--retro-primary) !important;
+    border-color: var(--retro-primary) !important;
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

@@ -1,0 +1,67 @@
+/* Navbar.module.css */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4rem;
+    background: var(--retro-bg);
+    border-bottom: var(--retro-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 1000;
+    box-shadow: 0 4px 0 var(--retro-primary);
+}
+
+.logo {
+    height: 3rem;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 0 2px var(--retro-secondary));
+}
+
+.navLinks {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.linkButton {
+    background: none;
+    border: 2px solid var(--retro-text);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    color: var(--retro-text);
+    cursor: pointer;
+    padding: 8px 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+}
+
+.linkButton.active {
+    background: var(--retro-primary);
+    color: black;
+    border-color: var(--retro-primary);
+}
+
+.linkButton:hover {
+    background: var(--retro-secondary);
+    color: black;
+    border-color: var(--retro-secondary);
+}
+
+/* Адаптация */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 1rem;
+        height: 3.5rem;
+    }
+    .logo {
+        height: 2.5rem;
+    }
+    .linkButton {
+        padding: 6px 10px;
+        font-size: 8px;
+    }
+}
