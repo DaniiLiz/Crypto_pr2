@@ -1,51 +1,58 @@
 /* Chat.module.css */
+
+/* Основной контейнер чата */
 .chatContainer {
     width: 100%;
-    background: rgba(13, 2, 33, 0.9);
-    border: 3px solid #ff2d75;
-    box-shadow: 0 0 0 4px #2bff00;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 20px;
-    position: relative;
+    height: 100%;
+    background: rgba(13, 2, 33, 0.95);
+    border-left: 3px solid var(--retro-primary);
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    box-sizing: border-box;
 }
 
+/* Заголовок чата */
 .chatContainer::before {
     content: "CHAT TERMINAL v1.0";
     position: absolute;
-    top: -15px;
-    left: 10px;
-    background: #0d0221;
+    top: 15px;
+    left: 15px;
+    background: var(--retro-bg);
     padding: 0 10px;
     font-size: 10px;
-    color: #ff2d75;
+    color: var(--retro-primary);
     font-family: 'Press Start 2P', cursive;
+    z-index: 1;
 }
 
+/* Контейнер сообщений */
 .messageContainer {
-    height: 60vh;
+    flex-grow: 1;
     overflow-y: auto;
     padding: 15px;
     background: rgba(0, 0, 0, 0.3);
-    border: 2px solid #2bff00;
+    border: 2px solid var(--retro-secondary);
     margin: 15px 0;
     scrollbar-width: thin;
-    scrollbar-color: #ff2d75 #0d0221;
+    scrollbar-color: var(--retro-primary) var(--retro-bg);
 }
 
+/* Стилизация скроллбара */
 .messageContainer::-webkit-scrollbar {
     width: 8px;
 }
 
 .messageContainer::-webkit-scrollbar-track {
-    background: #0d0221;
+    background: var(--retro-bg);
 }
 
 .messageContainer::-webkit-scrollbar-thumb {
-    background-color: #ff2d75;
+    background-color: var(--retro-primary);
     border-radius: 4px;
 }
 
+/* Стили сообщений */
 .message {
     display: flex;
     flex-wrap: wrap;
@@ -53,36 +60,39 @@
     padding: 10px;
     margin-bottom: 12px;
     background: rgba(255, 255, 255, 0.05);
-    border-left: 3px solid #ff9e00;
+    border-left: 3px solid var(--retro-accent);
 }
 
 .systemMessage {
-    color: #2bff00 !important;
+    color: var(--retro-secondary) !important;
     font-size: 10px !important;
     padding: 8px;
     background: rgba(0, 0, 0, 0.3) !important;
-    border-left: 3px solid #ff2d75;
+    border-left: 3px solid var(--retro-primary);
 }
 
+/* Форма ввода */
 .form {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.form input {
+/* Поле ввода */
+.chatInput {
     background: rgba(0, 0, 0, 0.5) !important;
-    border: 2px solid #ffffff !important;
+    border: 2px solid var(--retro-text) !important;
     color: white !important;
     padding: 10px !important;
     font-family: 'Press Start 2P', cursive !important;
     font-size: 10px !important;
-    caret-color: #ff2d75;
+    caret-color: var(--retro-primary);
     animation: blink 1s step-end infinite;
 }
 
-.form button {
-    background: #ff2d75 !important;
+/* Кнопка отправки */
+.sendButton {
+    background: var(--retro-primary) !important;
     color: black !important;
     border: none !important;
     padding: 10px 20px !important;
@@ -92,19 +102,120 @@
     transition: all 0.2s !important;
 }
 
-.form button:hover {
-    background: #ff9e00 !important;
+.sendButton:hover {
+    background: var(--retro-accent) !important;
     transform: translateY(-1px);
 }
 
+/* Строка статуса */
 .status {
     margin-top: 15px !important;
     font-family: 'Press Start 2P', cursive !important;
     font-size: 10px !important;
-    color: #ffffff !important;
+    color: var(--retro-text) !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
+/* Анимации */
 @keyframes blink {
     from, to { opacity: 1; }
     50% { opacity: 0; }
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 45, 117, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(255, 45, 117, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 45, 117, 0);
+    }
+}
+
+/* Кнопка открытия/закрытия чата */
+.chatToggleButton {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--retro-primary) !important;
+    color: black !important;
+    border: 3px solid var(--retro-text) !important;
+    box-shadow: 0 0 10px rgba(255, 45, 117, 0.7);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+.chatToggleButton:hover {
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 45, 117, 0.9);
+    animation: none;
+}
+
+/* Панель чата */
+.chatPanel {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 400px;
+    height: 70vh;
+    max-height: 700px;
+    min-height: 500px;
+    background: rgba(13, 2, 33, 0.95);
+    border-left: 3px solid var(--retro-primary);
+    transition: transform 0.3s ease;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+}
+
+.chatPanelHidden {
+    transform: translateX(100%) translateY(-50%);
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+    .chatPanel {
+        width: 100%;
+        height: 60vh;
+        top: auto;
+        bottom: 0;
+        transform: none;
+    }
+
+    .chatPanelHidden {
+        transform: translateY(100%);
+    }
+
+    .chatToggleButton {
+        right: 10px;
+        bottom: 20px;
+        top: auto;
+        transform: none;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+}
+
+/* Стили для временных меток */
+.timestamp {
+    margin-left: auto;
+    font-size: 8px !important;
+    color: var(--retro-secondary) !important;
+    opacity: 0.7;
 }

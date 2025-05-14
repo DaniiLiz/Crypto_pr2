@@ -171,7 +171,7 @@ export default function Chat() {
             <Button
                 type="primary"
                 onClick={sendMessage}
-                disabled={connectionStatus !== "connected" || !inputText.trim()}
+                //disabled={connectionStatus !== "connected" || !inputText.trim()}
                 className={styles.sendButton}
             >
               Отправить
