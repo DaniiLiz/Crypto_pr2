@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Button, Flex, Input, Tag, Typography } from "antd";
+import { Button, Flex, Input, Tag, Typography, message as antdMessage } from "antd";
 import styles from "./Chat.module.css";
 
 const { Text, Paragraph } = Typography;
@@ -16,15 +16,20 @@ export default function Chat() {
   const [inputText, setInputText] = useState("");
   const [username, setUsername] = useState("");
   const [connectionStatus, setConnectionStatus] = useState<"connected" | "disconnected" | "error">("disconnected");
+  const [retryCount, setRetryCount] = useState(0);
 
-  useEffect(() => {
-    const newSocket = new WebSocket("ws://89.169.168.253:4500");
+  const connectWebSocket = useCallback(() => {
+    // Используем ваш WebSocket API
+    const wsUrl = "ws://89.169.168.253:4500";
+    const newSocket = new WebSocket(wsUrl);
 
     newSocket.onopen = () => {
       console.log("WebSocket connected");
       setSocket(newSocket);
       setConnectionStatus("connected");
+      setRetryCount(0);
       addSystemMessage("Подключено к серверу");
+      antdMessage.success("Подключено к чату");
     };
 
     newSocket.onmessage = (event) => {
@@ -37,23 +42,44 @@ export default function Chat() {
       }
     };
 
-    newSocket.onclose = () => {
-      console.log("WebSocket disconnected");
+    newSocket.onclose = (event) => {
+      console.log("WebSocket disconnected", event.reason);
       setSocket(null);
       setConnectionStatus("disconnected");
-      addSystemMessage("Соединение закрыто");
+      addSystemMessage(`Соединение закрыто: ${event.reason || 'Неизвестная причина'}`);
+
+      // Пытаемся переподключиться с экспоненциальной задержкой
+      if (retryCount < 5) {
+        const delay = Math.min(1000 * Math.pow(2, retryCount), 30000);
+        antdMessage.warning(`Попытка переподключения через ${delay/1000} сек...`);
+        setTimeout(() => {
+          setRetryCount(prev => prev + 1);
+          connectWebSocket();
+        }, delay);
+      } else {
+        antdMessage.error("Не удалось подключиться к серверу. Пожалуйста, обновите страницу.");
+      }
     };
 
     newSocket.onerror = (error) => {
       console.error("WebSocket error:", error);
       setConnectionStatus("error");
       addSystemMessage("Ошибка подключения");
+      antdMessage.error("Ошибка соединения с сервером");
     };
 
+    return newSocket;
+  }, [retryCount]);
+
+  useEffect(() => {
+    const socketInstance = connectWebSocket();
+
     return () => {
-      newSocket.close();
+      if (socketInstance) {
+        socketInstance.close();
+      }
     };
-  }, []);
+  }, [connectWebSocket]);
 
   const addSystemMessage = (text: string) => {
     setMessages(prev => [...prev, {
@@ -74,10 +100,12 @@ export default function Chat() {
           username: newUsername
         }));
         addSystemMessage(`Установлено имя: ${newUsername}`);
+        antdMessage.success(`Имя изменено на: ${newUsername}`);
       }
     } else {
       if (!username) {
         addSystemMessage("Ошибка: Сначала установите имя с помощью /name ВашеИмя");
+        antdMessage.warning("Установите имя с помощью /name ВашеИмя");
         return;
       }
       const message = {
@@ -96,6 +124,11 @@ export default function Chat() {
       e.preventDefault();
       sendMessage();
     }
+  };
+
+  const handleReconnect = () => {
+    setRetryCount(0);
+    connectWebSocket();
   };
 
   return (
@@ -153,6 +186,22 @@ export default function Chat() {
                 <Tag color="#ff2d75" style={{ color: "#000" }}>ERROR</Tag>
             ) : (
                 <Tag color="#ff9e00" style={{ color: "#000" }}>OFFLINE</Tag>
+            )}
+
+            {connectionStatus !== "connected" && (
+                <Button
+                    size="small"
+                    onClick={handleReconnect}
+                    style={{ marginLeft: '10px', fontFamily: '"Press Start 2P", cursive', fontSize: '10px' }}
+                >
+                  Переподключиться
+                </Button>
+            )}
+
+            {retryCount > 0 && (
+                <Text type="secondary" style={{ fontSize: '8px', display: 'block', marginTop: '4px' }}>
+                  Попытка {retryCount}/5...
+                </Text>
             )}
           </Paragraph>
         </form>
