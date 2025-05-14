@@ -1,8 +1,8 @@
-import { Spin, Table, Typography, Button, Drawer } from "antd";
+import { Spin, Table, Typography, Button } from "antd";
 import { useState } from "react";
 import type { TableColumnsType } from "antd";
 import { useQuery } from "@tanstack/react-query";
-import { LoadingOutlined } from "@ant-design/icons";
+import { LoadingOutlined, MessageOutlined, CloseOutlined } from "@ant-design/icons";
 import { CryptoDataType } from "./types";
 import { fetchData, transformData } from "./functions";
 import styles from "./Table.module.css";
@@ -17,10 +17,6 @@ const columns: TableColumnsType<CryptoDataType> = [
     dataIndex: "key",
     key: "key",
     width: 60,
-    sorter: {
-      compare: (a, b) => a.key.localeCompare(b.key),
-      multiple: 5,
-    },
     render: (_, __, index) => (
         <Text style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '10px' }}>
           {index + 1}
@@ -28,34 +24,33 @@ const columns: TableColumnsType<CryptoDataType> = [
     ),
   },
   {
-    title: "Логотип",
+    title: "Лого",
     dataIndex: "logo",
     key: "logo",
-    width: 80,
-    render: (logo: string) => (
+    width: 60,
+    render: (logo) => (
         <img
             src={logo}
-            alt="Logo"
+            alt=""
             style={{
-              width: "24px",
-              height: "24px",
-              borderRadius: "50%",
-              objectFit: "cover",
-              imageRendering: "pixelated"
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              imageRendering: 'pixelated'
             }}
         />
     ),
   },
   {
-    title: "Название",
+    title: "Монета",
     dataIndex: "name",
     key: "name",
     width: 150,
-    render: (name: string, record) => (
+    render: (name, record) => (
         <div style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '10px' }}>
           <Text strong style={{ color: '#ff9e00' }}>{name}</Text>
           <br />
-          <Text type="secondary" style={{ color: '#2bff00' }}>{record.symbol}</Text>
+          <Text style={{ color: '#2bff00' }}>{record.symbol}</Text>
         </div>
     ),
   },
@@ -64,15 +59,7 @@ const columns: TableColumnsType<CryptoDataType> = [
     dataIndex: "price",
     key: "price",
     width: 120,
-    sorter: {
-      compare: (a, b) => {
-        const numA = parseFloat(a.price.replace('$', ''));
-        const numB = parseFloat(b.price.replace('$', ''));
-        return numA - numB;
-      },
-      multiple: 4,
-    },
-    render: (price: string) => (
+    render: (price) => (
         <Text strong style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '10px' }}>
           {price}
         </Text>
@@ -83,79 +70,25 @@ const columns: TableColumnsType<CryptoDataType> = [
     dataIndex: "priceChange",
     key: "priceChange",
     width: 100,
-    sorter: {
-      compare: (a, b) => {
-        const numA = parseFloat(a.priceChange.replace('%', ''));
-        const numB = parseFloat(b.priceChange.replace('%', ''));
-        return numA - numB;
-      },
-      multiple: 3,
-    },
-    render: (text: string) => {
+    render: (text) => {
       const change = parseFloat(text.replace('%', ''));
       const color = change >= 0 ? '#16c784' : '#ea3943';
       return (
-          <Text
-              strong
-              style={{
-                color,
-                fontFamily: '"Press Start 2P", cursive',
-                fontSize: '10px'
-              }}
-          >
+          <Text strong style={{ color, fontFamily: '"Press Start 2P", cursive', fontSize: '10px' }}>
             {change >= 0 ? '+' : ''}{text}
           </Text>
       );
     },
   },
   {
-    title: "Капитализация",
-    dataIndex: "marketCap",
-    key: "marketCap",
-    width: 150,
-    sorter: {
-      compare: (a, b) => {
-        const numA = parseFloat(a.marketCap.replace(/\$|,/g, ''));
-        const numB = parseFloat(b.marketCap.replace(/\$|,/g, ''));
-        return numA - numB;
-      },
-      multiple: 2,
-    },
-    render: (text: string) => (
-        <Text style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '10px' }}>
-          {text}
-        </Text>
-    ),
-  },
-  {
-    title: "Объем (24ч)",
-    dataIndex: "volume",
-    key: "volume",
-    width: 150,
-    sorter: {
-      compare: (a, b) => {
-        const numA = parseFloat(a.volume.replace(/\$|,/g, ''));
-        const numB = parseFloat(b.volume.replace(/\$|,/g, ''));
-        return numA - numB;
-      },
-      multiple: 1,
-    },
-    render: (text: string) => (
-        <Text style={{ fontFamily: '"Press Start 2P", cursive', fontSize: '10px' }}>
-          {text}
-        </Text>
-    ),
-  },
-  {
-    title: "График (7д)",
+    title: "График 7д",
     key: "chart",
-    width: 180,
+    width: 150,
     render: (_, record) => (
         <SparklineChart
             data={record.sparkline || []}
-            priceChange={record.priceChange7d}
-            width={180}
-            height={60}
+            width={150}
+            height={50}
         />
     ),
   },
@@ -164,10 +97,10 @@ const columns: TableColumnsType<CryptoDataType> = [
 export default function CurrencyTable() {
   const [page, setPage] = useState(1);
   const [sort] = useState("market_cap_desc");
-  const [chatVisible, setChatVisible] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const { data, isError, isLoading, error } = useQuery({
-    queryKey: ["currencies", page, sort],
+    queryKey: ["crypto", page, sort],
     queryFn: () => fetchData(page, sort),
   });
 
@@ -179,7 +112,7 @@ export default function CurrencyTable() {
           padding: '20px',
           textAlign: 'center'
         }}>
-          ERROR: {error.toString()}
+          Ошибка: {error.message}
         </div>
     );
   }
@@ -188,70 +121,57 @@ export default function CurrencyTable() {
       <div className={styles.container}>
         {isLoading ? (
             <Spin
+                indicator={<LoadingOutlined style={{ fontSize: 48, color: '#ff2d75' }} spin />}
                 className={styles.loading}
-                indicator={<LoadingOutlined style={{ fontSize: 56, color: '#ff2d75' }} spin />}
             />
         ) : (
             <>
-              <Table<CryptoDataType>
-                  className={styles.table}
-                  columns={columns}
-                  dataSource={transformData(data)}
-                  pagination={false}
-                  size="middle"
-                  scroll={{ x: true }}
-                  rowKey="key"
-              />
+              <div className={styles.tableWrapper}>
+                <Table
+                    columns={columns}
+                    dataSource={transformData(data)}
+                    pagination={false}
+                    scroll={{ x: true }}
+                    rowKey="key"
+                    className={styles.table}
+                />
+              </div>
 
               <div className={styles.pagination}>
                 <Button
-                    onClick={() => page > 1 && setPage(page - 1)}
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className={styles.paginationButton}
                 >
-                  ← BACK
+                  ← Назад
                 </Button>
-                <Typography.Text className={styles.pageNumber}>
-                  PAGE {page}
-                </Typography.Text>
+                <Text style={{ fontFamily: '"Press Start 2P", cursive' }}>Страница {page}</Text>
                 <Button
-                    onClick={() => setPage(page + 1)}
-                    disabled={data && data.length < 10}
-                    className={styles.paginationButton}
+                    onClick={() => setPage(p => p + 1)}
+                    disabled={data?.length < 10}
                 >
-                  NEXT →
+                  Вперёд →
                 </Button>
               </div>
 
+              {/* Кнопка и панель чата */}
               <Button
                   type="primary"
-                  shape="circle"
-                  size="large"
-                  className={styles.chatButton}
-                  onClick={() => setChatVisible(true)}
-              >
-                💬
-              </Button>
+                  className={styles.chatToggle}
+                  onClick={() => setIsChatOpen(!isChatOpen)}
+                  icon={<MessageOutlined />}
+              />
 
-              <Drawer
-                  title={
-                    <span style={{ fontFamily: '"Press Start 2P", cursive' }}>
-                CRYPTO CHAT
-              </span>
-                  }
-                  placement="right"
-                  onClose={() => setChatVisible(false)}
-                  open={chatVisible}
-                  width={400}
-                  headerStyle={{
-                    background: '#0d0221',
-                    borderBottom: '2px solid #ff2d75',
-                    fontFamily: '"Press Start 2P", cursive'
-                  }}
-                  bodyStyle={{ padding: 0 }}
-              >
+              <div className={`${styles.chatPanel} ${isChatOpen ? styles.open : ''}`}>
+                <div className={styles.chatHeader}>
+                  <Text strong style={{ fontFamily: '"Press Start 2P", cursive' }}>КРИПТО ЧАТ</Text>
+                  <Button
+                      type="text"
+                      icon={<CloseOutlined />}
+                      onClick={() => setIsChatOpen(false)}
+                  />
+                </div>
                 <Chat />
-              </Drawer>
+              </div>
             </>
         )}
       </div>
